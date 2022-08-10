@@ -1,4 +1,4 @@
-use crate::durable::ObjectNamespace;
+use crate::{durable::ObjectNamespace, Bucket};
 use crate::error::Error;
 use crate::Result;
 
@@ -44,6 +44,10 @@ impl Env {
 
     /// Access a Durable Object namespace by the binding name configured in your wrangler.toml file.
     pub fn durable_object(&self, binding: &str) -> Result<ObjectNamespace> {
+        self.get_binding(binding)
+    }
+
+    pub fn bucket(&self, binding: &str) -> Result<Bucket> {
         self.get_binding(binding)
     }
 }

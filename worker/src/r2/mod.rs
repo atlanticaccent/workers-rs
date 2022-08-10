@@ -9,7 +9,7 @@ use worker_sys::r2::{
     R2Objects as EdgeR2Objects,
 };
 
-use crate::{ByteStream, Error, Result};
+use crate::{ByteStream, Error, Result, env::EnvBinding};
 
 mod builder;
 
@@ -83,6 +83,37 @@ impl Bucket {
             delimiter: None,
             include: None,
         }
+    }
+}
+
+
+impl EnvBinding for Bucket {
+    const TYPE_NAME: &'static str = "R2Bucket";
+}
+
+impl JsCast for Bucket {
+    fn instanceof(val: &JsValue) -> bool {
+        val.is_instance_of::<EdgeR2Bucket>()
+    }
+
+    fn unchecked_from_js(val: JsValue) -> Self {
+        Self { inner: val.into() }
+    }
+
+    fn unchecked_from_js_ref(val: &JsValue) -> &Self {
+        unsafe { &*(val as *const JsValue as *const Self) }
+    }
+}
+
+impl From<Bucket> for JsValue {
+    fn from(ns: Bucket) -> Self {
+        JsValue::from(ns.inner)
+    }
+}
+
+impl AsRef<JsValue> for Bucket {
+    fn as_ref(&self) -> &JsValue {
+        &self.inner
     }
 }
 
